@@ -1,0 +1,21 @@
+# Lo que NO debe entrar a la imagen de Docker.
+
+# Entorno virtual de Windows: dentro de la caja se instalan las librerías de nuevo
+.venv/
+
+# Historial de git y archivos del editor
+.git/
+.gitignore
+.vscode/
+.idea/
+
+# Archivos que Python genera automáticamente
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Secretos y archivos de Docker mismos
+.env
+Dockerfile
+docker-compose.yml
+.dockerignore

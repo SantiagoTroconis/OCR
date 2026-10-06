@@ -1,0 +1,21 @@
+# Uso local para desarrollo. En Render solo se usa el Dockerfile.
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"        # puerto-de-tu-PC : puerto-dentro-de-la-caja
+
+    # Simula el plan gratuito de Render (512 MB). Si algo se pasa de memoria,
+    # nos enteramos aquí y no después de desplegar.
+    mem_limit: 512m
+
+    # Clave de acceso. Se lee del archivo .env (que no se sube a git).
+    # Si no existe, la API arranca sin protección y avisa en los logs.
+    environment:
+      API_KEY: ${API_KEY:-}
+
+    # Modo desarrollo: carpeta compartida con tu PC + recarga automática.
+    # Al guardar un cambio en app/, la API se reinicia sola, sin reconstruir.
+    volumes:
+      - ./app:/app/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
