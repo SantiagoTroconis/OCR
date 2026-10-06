@@ -1,0 +1,16 @@
+# --- Servidor web / API ---
+fastapi            # El framework con el que construimos la API
+uvicorn[standard]  # El servidor que "arranca" la API y la deja escuchando peticiones
+python-multipart   # Permite a FastAPI recibir archivos subidos (nuestro PDF)
+
+# --- Lectura de PDFs ---
+pymupdf            # Lee texto, metadatos e imágenes de un PDF (se importa como "fitz" o "pymupdf")
+pdfplumber         # Especialista en detectar tablas dentro de un PDF
+
+# --- OCR (PDFs escaneados) ---
+pytesseract        # Puente entre Python y el programa Tesseract (que se instala aparte)
+pillow             # Manejo de imágenes en Python (lo usa pytesseract)
+
+# --- Pruebas ---
+pytest             # Para escribir y ejecutar pruebas automáticas
+httpx              # Lo usa el cliente de pruebas de FastAPI para simular peticiones

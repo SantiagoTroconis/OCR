@@ -1,0 +1,17 @@
+# Entorno virtual: se puede recrear con "pip install -r requirements.txt"
+.venv/
+
+# Archivos compilados que Python genera automáticamente
+__pycache__/
+*.py[cod]
+
+# Cachés de herramientas
+.pytest_cache/
+
+# Variables de entorno / secretos
+.env
+
+# Archivos del editor y del sistema
+.vscode/
+.idea/
+Thumbs.db
