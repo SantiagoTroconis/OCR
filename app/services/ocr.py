@@ -10,10 +10,10 @@ IDIOMAS = "spa+eng"
 
 # Resolución con la que convertimos la página en imagen. Más alta = más precisión,
 # pero más lento y con más memoria. 200 es un buen equilibrio para el plan gratuito.
-DPI = 200
+DPI = 300
 
 # Tiempo máximo (en segundos) que Tesseract puede tardar en UNA página.
-TIMEOUT_SEGUNDOS = 30
+TIMEOUT_SEGUNDOS = 10
 
 # En Windows, el instalador de Tesseract lo deja en esta carpeta, pero no siempre
 # la agrega al PATH (la lista de lugares donde Windows busca programas). Si el
