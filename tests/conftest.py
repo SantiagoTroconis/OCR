@@ -10,7 +10,7 @@ import pymupdf
 import pytest
 from fastapi.testclient import TestClient
 
-CLAVE_API = "ApiKeydeMuchaSeguridad"
+CLAVE_API = "clave-de-prueba"
 
 # La API se niega a arrancar si no existe API_KEY, y eso se comprueba al importar
 # app.main. Por eso la definimos ANTES de importarla (solo vive en este proceso

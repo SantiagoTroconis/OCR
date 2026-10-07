@@ -1,6 +1,6 @@
 """Pruebas del endpoint POST /extraer (la API completa)."""
 
-CLAVE = "ApiKeydeMuchaSeguridad"
+CLAVE = "clave-de-prueba"  
 
 
 def _enviar(cliente, contenido, nombre="a.pdf", tipo="application/pdf", **kwargs):
