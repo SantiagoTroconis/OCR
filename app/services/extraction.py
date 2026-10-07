@@ -1,4 +1,8 @@
-from app.services.ocr import extraer_texto_ocr, tesseract_disponible
+from app.services.image import (
+    validar_imagen,
+    extraer_metadatos_imagen
+    )
+from app.services.ocr import extraer_texto_imagen_ocr, extraer_texto_ocr, tesseract_disponible
 from app.services.pdf import (
     PdfError,
     PdfIlegibleError,
@@ -12,6 +16,8 @@ from app.services.pdf import (
 # Máximo de páginas a las que se les aplica OCR en una sola petición.
 # El OCR es lo más pesado; este tope protege la memoria del plan gratuito.
 MAX_PAGINAS_OCR = 10
+
+
 
 
 def _intentar(funcion, contenido: bytes, nombre: str, advertencias: list) -> list:
@@ -107,6 +113,61 @@ def extraer_todo(contenido: bytes, usar_ocr: bool = True) -> dict:
         "paginas": paginas,
         "tablas": tablas,
         "imagenes": imagenes,
+        "ocr": ocr,
+        "advertencias": advertencias,
+    }
+
+
+
+
+def extraer_texto_imagen(contenido: bytes, usar_ocr: bool = True) -> dict:
+    """
+    Aplica OCR a una imagen (JPEG o PNG) y devuelve el texto.
+    Devuelve None si falla.
+    """
+    # Validamos que la imagen sea legible antes de intentar extraer texto.
+    validar_imagen(contenido)
+
+    advertencias = []
+    paginas = {
+        "pagina": 1,
+        "texto": "",
+        "caracteres": 0,
+        "requiere_ocr": True,
+        "texto_origen": None,
+    }
+    
+    ocr = {
+        'solicitado': usar_ocr,
+        'paginas_con_error': [],
+        'paginas_leidas': []
+    }
+
+    metadatos = extraer_metadatos_imagen(contenido)
+ 
+
+    
+    if usar_ocr:
+        resultado = extraer_texto_imagen_ocr(contenido)
+        
+        if resultado['error']:
+            ocr['paginas_con_error'].append(1)
+            advertencias.append(resultado['error'])
+
+        if resultado['texto']: 
+            ocr["paginas_leidas"].append(1)
+            paginas["texto"] = resultado['texto']
+            paginas["caracteres"] = len(resultado['texto'])
+            paginas["requiere_ocr"] = False
+            paginas["texto_origen"] = "ocr"
+            
+
+    
+    return {
+        "metadatos": metadatos,
+        "paginas": [paginas],
+        "tablas": [],
+        "imagenes": [],
         "ocr": ocr,
         "advertencias": advertencias,
     }

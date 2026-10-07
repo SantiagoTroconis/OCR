@@ -4,11 +4,13 @@ Una "fixture" es una función que prepara datos; la prueba la pide poniendo
 su nombre como parámetro. Aquí fabricamos PDFs en memoria con PyMuPDF.
 """
 
+import io
 import os
 
 import pymupdf
 import pytest
 from fastapi.testclient import TestClient
+from PIL import Image, ImageDraw
 
 CLAVE_API = "clave-de-prueba"
 
@@ -20,6 +22,7 @@ os.environ["API_KEY"] = CLAVE_API
 from app.main import app  # noqa: E402
 
 TEXTO_ESCANEADO = "Factura numero 12345\nTotal a pagar: 350 pesos"
+TEXTO_IMAGEN = "Factura numero 12345"
 
 
 @pytest.fixture(autouse=True)
@@ -114,3 +117,28 @@ def pdf_cifrado() -> bytes:
     return doc.tobytes(
         encryption=pymupdf.PDF_ENCRYPT_AES_256, user_pw="123", owner_pw="456"
     )
+
+
+def _imagen_con_texto(texto: str, formato: str) -> bytes:
+    """Crea una imagen de 1200x300 con el texto escrito, en PNG o JPEG."""
+    imagen = Image.new("RGB", (1200, 300), "white")
+    if texto:
+        ImageDraw.Draw(imagen).text((30, 100), texto, fill="black", font_size=60)
+    buffer = io.BytesIO()
+    imagen.save(buffer, formato)
+    return buffer.getvalue()
+
+
+@pytest.fixture
+def png_texto() -> bytes:
+    return _imagen_con_texto(TEXTO_IMAGEN, "PNG")
+
+
+@pytest.fixture
+def jpeg_texto() -> bytes:
+    return _imagen_con_texto(TEXTO_IMAGEN, "JPEG")
+
+
+@pytest.fixture
+def png_en_blanco() -> bytes:
+    return _imagen_con_texto("", "PNG")

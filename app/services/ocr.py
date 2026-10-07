@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pymupdf
 import pytesseract
-from PIL import Image
+from PIL import Image, ImageOps
 
 # Idiomas que Tesseract usará para leer: español e inglés.
 IDIOMAS = "spa+eng"
@@ -65,3 +65,25 @@ def extraer_texto_ocr(contenido: bytes, paginas: list[int]) -> dict[int, dict]:
                 resultado[numero] = {"texto": None, "error": type(error).__name__}
 
     return resultado
+
+
+
+def extraer_texto_imagen_ocr(contenido: bytes) -> dict[str, str | None]:
+    """
+    Aplica OCR a una imagen y devuelve el texto.
+    """
+    try:
+        with Image.open(io.BytesIO(contenido)) as img:
+            img = img.convert("L") # Convierte a escala de grises para mejorar OCR
+            img.thumbnail((3000, 3000))  # Limita tamaño para no usar demasiada memoria
+
+            img = ImageOps.exif_transpose(img)  
+            
+        resultados =  {"texto": pytesseract.image_to_string(img, lang=IDIOMAS, timeout=TIMEOUT_SEGUNDOS).strip(), "error": None}
+
+        return resultados
+    except Exception:
+        resultados = {"texto": None, "error": "No se pudo procesar la imagen con OCR."}
+        
+        return resultados
+    
